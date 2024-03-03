@@ -6,7 +6,7 @@ Repositório criado para armazenar entregas da diciplina de sistemas operacionai
 
      --> código em python: lab01.py
 
-     --> print (lab01.png) contendo evidencias de que o código foi executados no terminal da AWS.
+     --> print (lab01.png) contendo evidências de que o código foi executado no terminal da AWS.
 
   --> lab02
 
