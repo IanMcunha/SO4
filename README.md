@@ -6,7 +6,7 @@ Repositório criado para armazenar entregas da diciplina de sistemas operacionai
 
      --> código em python: HelloWorld.py
 
-     --> print contendo evidencias de que o código foi executados no terminal da AWS 
+     --> print (Captura de tela 2024-02-29 151438.png) contendo evidencias de que o código foi executados no terminal da AWS.
 
   --> lab02
 
