@@ -4,12 +4,12 @@ Repositório criado para armazenar entregas da diciplina de sistemas operacionai
 
   --> lab01
 
-     --> código em python: HelloWorld.py
+     --> código em python: lab01.py
 
-     --> print (Captura de tela 2024-02-29 151438.png) contendo evidencias de que o código foi executados no terminal da AWS.
+     --> print (lab01.png) contendo evidencias de que o código foi executados no terminal da AWS.
 
   --> lab02
 
-     --> README.md
+     --> ....
 
-     --> lab02.c
+     --> ....
