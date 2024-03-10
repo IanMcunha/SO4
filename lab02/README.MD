@@ -10,7 +10,7 @@ Quanto ao segundo exemplo, serão criados 8 processos no total. Isso ocorre porq
 
 ## Exercício
 
-Para um exemplo onde processos pai e filho trocam mensagens, podemos usar um mecanismo simples de comunicação interprocesso, como pipes. Aqui está um exemplo:
+Para um exemplo onde processos pai e filho trocam mensagens, podemos usar um mecanismo simples de comunicação interprocesso, como pipes.
  
 ## Console da AWS rodando o programa:
 <img src="" alt="Print AWS">
