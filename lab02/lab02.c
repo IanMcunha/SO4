@@ -7,14 +7,13 @@
 #define BUFFER_SIZE 256
 
 int main() {
-    int fd1[2], fd2[2];  // Dois pipes: fd1 para pai -> filho, fd2 para filho -> pai
+    int fd[2]; // Pipe para comunicação de pai para filho
     pid_t pid;
     char parent_msg[BUFFER_SIZE] = "Hello from parent!";
-    char child_msg[BUFFER_SIZE] = "Hello from child!";
     char read_buffer[BUFFER_SIZE];
 
-    // Cria os pipes
-    if (pipe(fd1) == -1 || pipe(fd2) == -1) {
+    // Cria o pipe
+    if (pipe(fd) == -1) {
         perror("Pipe Failed");
         exit(EXIT_FAILURE);
     }
@@ -24,42 +23,20 @@ int main() {
         fprintf(stderr, "Fork Failed\n");
         exit(EXIT_FAILURE);
     } else if (pid > 0) { // Processo pai
-        close(fd1[0]); // Fecha lado de leitura do primeiro pipe no pai
-        close(fd2[1]); // Fecha lado de escrita do segundo pipe no pai
-
+        close(fd[0]); // Fecha lado de leitura do pipe no pai
         // Envia mensagem ao filho
-        write(fd1[1], parent_msg, sizeof(parent_msg));
+        write(fd[1], parent_msg, sizeof(parent_msg));
         printf("Pai: Mensagem enviada para o filho.\n");
-
-        close(fd1[1]); // Fecha lado de escrita do primeiro pipe
-
-        // Lê resposta do filho
-        read(fd2[0], read_buffer, sizeof(read_buffer));
-        printf("Pai: Resposta recebida do filho: %s\n", read_buffer);
-
-        close(fd2[0]); // Fecha lado de leitura do segundo pipe
-        
-        fflush(stdout); // Garantir que as mensagens sejam impressas na ordem correta de execução forçando o buffer a ser esvaziado.
+        close(fd[1]); // Fecha lado de escrita do pipe
         wait(NULL); // Espera o processo filho terminar
-
+        printf("Pai: Finalizando processo.\n");
     } else { // Processo filho
-        close(fd1[1]); // Fecha lado de escrita do primeiro pipe no filho
-        close(fd2[0]); // Fecha lado de leitura do segundo pipe no filho
-
+        close(fd[1]); // Fecha lado de escrita do pipe no filho
         // Lê mensagem do pai
-        read(fd1[0], read_buffer, sizeof(read_buffer));
+        read(fd[0], read_buffer, sizeof(read_buffer));
         printf("Filho: Mensagem recebida do pai: %s\n", read_buffer);
-
-        close(fd1[0]); // Fecha lado de leitura do primeiro pipe
-        
-        fflush(stdout); // Garantir que as mensagens sejam impressas na ordem correta de execução forçando o buffer a ser esvaziado.
-        // Envia resposta para o pai
-        
-        write(fd2[1], child_msg, sizeof(child_msg));
-        printf("Filho: Mensagem enviada para o pai.\n");
-
-        close(fd2[1]); // Fecha lado de escrita do segundo pipe
-
+        close(fd[0]); // Fecha lado de leitura do pipe
+        printf("Filho: Finalizando processo.\n");
         exit(0);
     }
 
