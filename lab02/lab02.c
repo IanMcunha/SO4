@@ -38,7 +38,8 @@ int main() {
         printf("Pai: Resposta recebida do filho: %s\n", read_buffer);
 
         close(fd2[0]); // Fecha lado de leitura do segundo pipe
-
+        
+        fflush(stdout); // Garantir que as mensagens sejam impressas na ordem correta de execução forçando o buffer a ser esvaziado.
         wait(NULL); // Espera o processo filho terminar
 
     } else { // Processo filho
@@ -50,8 +51,10 @@ int main() {
         printf("Filho: Mensagem recebida do pai: %s\n", read_buffer);
 
         close(fd1[0]); // Fecha lado de leitura do primeiro pipe
-
+        
+        fflush(stdout); // Garantir que as mensagens sejam impressas na ordem correta de execução forçando o buffer a ser esvaziado.
         // Envia resposta para o pai
+        
         write(fd2[1], child_msg, sizeof(child_msg));
         printf("Filho: Mensagem enviada para o pai.\n");
 
