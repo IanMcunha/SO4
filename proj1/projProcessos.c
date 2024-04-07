@@ -1,48 +1,85 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <pthread.h>
+#include <fcntl.h>
+#include <sys/mman.h>
 #include <sys/wait.h>
+#include <semaphore.h>
 
-#define TEMPO_TRAVESSIA 10 // Tempo que leva para atravessar a escada
+#define MAX_PESSOAS 10000
 
-void usarEscada(int id, int direcao) {
-    printf("Pessoa %d quer ir na direção %d e está começando a usar a escada.\n", id, direcao);
-    sleep(TEMPO_TRAVESSIA); // Simula o tempo para atravessar a escada
-    printf("Pessoa %d terminou de usar a escada.\n", id);
+typedef struct {
+    int tempoChegada;
+    int direcao;
+} Passageiro;
+
+typedef struct {
+    int tempoFinal;
+    int direcaoAtual; // -1 indica que a escada está parada
+} EstadoEscada;
+
+void funcaoPassageiro(Passageiro p, EstadoEscada *estado, sem_t *sem) {
+    sleep(p.tempoChegada);
+    sem_wait(sem);
+    if (estado->direcaoAtual == -1 || estado->direcaoAtual == p.direcao) {
+        estado->direcaoAtual = p.direcao;
+        if (estado->tempoFinal < p.tempoChegada) {
+            estado->tempoFinal = p.tempoChegada;
+        }
+        estado->tempoFinal += 10;
+    } else {
+        estado->tempoFinal += (estado->tempoFinal > p.tempoChegada) ? 10 : (p.tempoChegada - estado->tempoFinal) + 10;
+        estado->direcaoAtual = p.direcao;
+    }
+    sem_post(sem);
 }
 
 int main() {
-    pid_t pid;
-    int n, ti, di;
-    printf("Informe o número de pessoas: ");
-    scanf("%d", &n);
+    int numPassageiros;
+    scanf("%d", &numPassageiros);
+    Passageiro passageiros[MAX_PESSOAS];
 
-    for (int i = 0; i < n; i++) {
-        printf("Informe o momento e a direção para a pessoa %d: ", i + 1);
-        scanf("%d %d", &ti, &di);
+    // Criação e inicialização da memória compartilhada com a API POSIX
+    int shm_fd = shm_open("/shmEstadoEscada", O_CREAT | O_RDWR, 0666);
+    ftruncate(shm_fd, sizeof(EstadoEscada));
+    EstadoEscada *estado = (EstadoEscada *)mmap(NULL, sizeof(EstadoEscada), PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
+    estado->tempoFinal = 0;
+    estado->direcaoAtual = -1;
 
-        pid = fork();
+    // Criação e inicialização do semáforo
+    sem_t *sem = sem_open("/semEscada", O_CREAT, 0666, 1);
 
-        if (pid == 0) { // Código executado pelo processo filho
-            // Simula a espera até o momento de usar a escada
-            sleep(ti);
-            usarEscada(i + 1, di);
-            exit(0); // Termina o processo filho
-        } else if (pid > 0) { // Código executado pelo processo pai
-            // O processo pai poderia esperar aqui com waitpid() se necessário
-        } else {
-            perror("fork falhou");
-            exit(EXIT_FAILURE);
+    // Lê as informações de cada passageiro
+    for (int i = 0; i < numPassageiros; i++) {
+        scanf("%d %d", &passageiros[i].tempoChegada, &passageiros[i].direcao);
+    }
+
+    // Cria um processo para cada passageiro
+    for (int i = 0; i < numPassageiros; i++) {
+        pid_t pid = fork();
+        if (pid == 0) { // Processo filho
+            funcaoPassageiro(passageiros[i], estado, sem);
+            exit(0);
+        } else if (pid < 0) {
+            perror("fork");
+            exit(1);
         }
     }
 
-    // O processo pai espera todos os filhos terminarem
-    while (n > 0) {
-        wait(NULL);
-        n--;
-    }
+    // Espera todos os processos filhos terminarem
+    while (wait(NULL) > 0);
 
-    printf("Todas as pessoas terminaram de usar a escada.\n");
+    printf("O momento final de parada da escada rolante é %d\n", estado->tempoFinal);
+
+    // Limpeza
+    munmap(estado, sizeof(EstadoEscada));
+    close(shm_fd);
+    shm_unlink("/shmEstadoEscada");
+    sem_close(sem);
+    sem_unlink("/semEscada");
+
     return 0;
 }
+
 
