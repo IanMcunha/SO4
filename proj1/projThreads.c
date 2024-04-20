@@ -76,7 +76,7 @@ int main() {
     pthread_t idThread;
 
     char caminhoArquivo[256];
-    printf("Digite o caminho do arquivo de entrada (ex: ./input/E_58.txt): ");
+    printf("Digite o caminho do arquivo de entrada (ex: ./input/E_58\\): ");
     scanf("%s", caminhoArquivo);
 
     FILE *arquivo = fopen(caminhoArquivo, "r");
