@@ -109,5 +109,7 @@ Para a maioria das aplicações práticas deste problema, a implementação com 
 ## Comprovação de execução na aws: 
 
 ![Screenshot 2024-04-19 231424](https://github.com/IanMcunha/SO4/assets/101913171/0c46a754-208e-4f5c-a66a-c26e407e98f9)
+![image](https://github.com/IanMcunha/SO4/assets/101913171/ea3b3c08-51a2-4bf0-8102-5e76a8887e5a)
+
 
 
