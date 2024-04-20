@@ -1,6 +1,17 @@
 # Projeto 1 - Sistemas Operacionais
 ## Escada Rolante
 
+## Documentação código Processos: 
+Este código implementa um sistema de gerenciamento de tráfego de pessoas em uma escada rolante que suporta movimento em duas direções: subida e descida. As pessoas são organizadas em duas filas, uma para cada direção, e processadas conforme sua ordem de chegada e a direção atual da escada. O código utiliza a biblioteca pthread para gerenciar o fluxo de pessoas de forma concorrente, simulando o funcionamento da escada em um ambiente real.
+Lógica de Processamento:
+Inicialização: O programa lê os dados de entrada e inicializa as filas de subida e descida com base nas direções desejadas das pessoas.
+Processamento Concorrente: A função escalador é executada em uma thread separada para simular o funcionamento da escada rolante. Isso permite que o sistema opere de forma assíncrona e eficiente.
+Gerenciamento de Direção: O programa verifica continuamente a direção atual da escada e a compara com a direção das pessoas na fila. Se a pessoa no início da fila corresponder à direção atual da escada, ela usará a escada. Caso contrário, a direção pode ser alterada se a outra fila tiver pessoas esperando e a escada estiver livre.
+Atualização de Tempo: Cada uso da escada adiciona 10 segundos ao tempo global saida, que rastreia quando a escada foi usada pela última vez.
+
+## Documentação código Threads:
+
+
 #### 1. Qual a estratégia que você utilizou para evitar que duas pessoas acessem a escada rolante ao mesmo tempo em cada abordagem?
 R: Em ambas as abordagens, utilizamos mecanismos de sincronização. Nas threads, o pthread_mutex_lock foi utilizado para garantir que somente uma thread pudesse acessar e modificar as variáveis compartilhadas em um dado momento. Nos processos, semáforos foram usados com a chamada sem_wait para bloquear o acesso à seção crítica, assegurando que apenas um processo por vez pudesse realizar mudanças no estado compartilhado da escada.
 
