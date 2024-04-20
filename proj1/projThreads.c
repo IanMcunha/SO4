@@ -1,86 +1,111 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
 #include <pthread.h>
-#include <semaphore.h>
+#define MAXN 10000
 
-#define MAX_PESSOAS 10000
-
-typedef struct {
-    int tempo, direcao;
-} Passageiro;
+int saida = 0;
 
 typedef struct {
-    int tempoFinal;
-    int direcaoAtual; // -1 indica que a escada está parada
-    int contador[2]; // Contadores para pessoas esperando em cada direção [0] e [1]
-    Passageiro fila[2][MAX_PESSOAS]; // Filas de espera para cada direção
-    int fimFila[2]; // Aponta para o fim da fila em cada direção
-} EstadoEscada;
+    int tempo;
+    int direcao;
+} Pessoa;
 
-pthread_mutex_t mutex;
-sem_t semTempo, semDirecao;
+Pessoa filaSubida[MAXN];
+int tamanhoFS = 0;
+Pessoa filaDescida[MAXN];
+int tamanhoFD = 0;
+Pessoa primeiro;
 
-void *processarPassageiro(void *arg) {
-    Passageiro *p = (Passageiro *)arg;
+void* escalador() {
 
-    pthread_mutex_lock(&mutex);
-    if (estado.direcaoAtual == -1 || estado.direcaoAtual == p->direcao) {
-        // Processa imediatamente se estiver na mesma direção ou escada parada
-        estado.direcaoAtual = p->direcao;
-        estado.tempoFinal = p->tempo + 10; // Supõe processamento imediato
-        estado.contador[p->direcao]++;
-    } else {
-        // Adiciona à fila de espera da direção oposta
-        estado.fila[p->direcao][estado.fimFila[p->direcao]++] = *p;
+    int indiceFS = 0, indiceFD = 0;
+
+    while (indiceFS < tamanhoFS || indiceFD < tamanhoFD) {
+
+        // subindo
+        if (primeiro.direcao == 0) {
+
+            // segue a mesma direção se o tempo de chegada for menor que o último tempo de saída ou se estiver imediatamente ao lado do anterior
+            if ((indiceFS < tamanhoFS && (filaSubida[indiceFS].tempo <= saida) || (filaSubida[indiceFS].tempo > saida && filaSubida[indiceFS].tempo < filaDescida[indiceFD].tempo)) || indiceFD == tamanhoFD) {
+                primeiro = filaSubida[indiceFS];               
+                ++indiceFS;   
+
+            // se o tempo de chegada for maior que o tempo de saída ou a fila estiver completamente usada 
+            } else if (filaSubida[indiceFS].tempo > saida || indiceFS == tamanhoFS) {
+                // muda a direção do escalador, considerando um novo tempo de chegada baseado no tempo de espera
+                primeiro = filaDescida[indiceFD];
+                if (saida > primeiro.tempo) primeiro.tempo = saida;
+                ++indiceFD;
+
+                // se o tempo de saída for maior que os seguintes
+                int i = indiceFD;
+                while (saida > filaDescida[i].tempo && i < tamanhoFD) {
+                    filaDescida[i].tempo = saida;
+                    ++i;
+                }
+            } 
+        // descendo                              
+        } else if (primeiro.direcao == 1) {
+
+            // segue a mesma direção se o tempo de chegada for menor que o último tempo de saída ou se estiver imediatamente ao lado do anterior
+            if ((indiceFD < tamanhoFD && filaDescida[indiceFD].tempo <= saida || (filaDescida[indiceFD].tempo > saida && filaDescida[indiceFD].tempo < filaSubida[indiceFS].tempo)) || indiceFS == tamanhoFS) {
+                primeiro = filaDescida[indiceFD];      
+                ++indiceFD;
+
+            // se o tempo de chegada for maior que o tempo de saída ou a fila estiver completamente usada                                               
+            } else if (filaDescida[indiceFD].tempo > saida || indiceFD == tamanhoFD) {
+                // muda a direção do escalador, considerando um novo tempo de chegada baseado no tempo de espera
+                primeiro = filaSubida[indiceFS];
+                if (saida > primeiro.tempo) primeiro.tempo = saida;
+                ++indiceFS;
+
+                // se o tempo de saída for maior que os seguintes
+                int i = indiceFS;
+                while (saida > filaSubida[i].tempo && i < tamanhoFS) {
+                    filaSubida[i].tempo = saida;
+                    ++i;
+                }                
+            }
+        }   
+        saida = primeiro.tempo + 10;
     }
-    pthread_mutex_unlock(&mutex);
-
-    // Trabalha na fila pendente se necessário
-    sem_wait(&semDirecao);
-    if (estado.contador[estado.direcaoAtual] == 0) { // Ninguém na direção atual
-        estado.direcaoAtual = 1 - estado.direcaoAtual; // Troca a direção
-        for (int i = 0; i < estado.fimFila[estado.direcaoAtual]; i++) {
-            sem_post(&semTempo);
-            estado.tempoFinal += 10;
-            estado.contador[estado.direcaoAtual]++;
-        }
-        estado.fimFila[estado.direcaoAtual] = 0; // Esvazia a fila
-    }
-    sem_post(&semDirecao);
-
     return NULL;
 }
 
+
 int main() {
-    EstadoEscada estado = {0, -1, {0, 0}, {{{0, 0}}, {{0, 0}}}, {0, 0}};
-    pthread_t threads[MAX_PESSOAS];
-    Passageiro passageiros[MAX_PESSOAS];
-    int numPassageiros;
+    pthread_t idThread;
 
-    // Inicialização de semáforos e mutex
-    sem_init(&semTempo, 0, 1);
-    sem_init(&semDirecao, 0, 1);
-    pthread_mutex_init(&mutex, NULL);
+    char caminhoArquivo[256];
+    printf("Digite o caminho do arquivo de entrada (ex: ./input/E_58.txt): ");
+    scanf("%s", caminhoArquivo);
 
-    // Carregar passageiros
-    for (int i = 0; i < numPassageiros; i++) {
-        scanf("%d %d", &passageiros[i].tempo, &passageiros[i].direcao);
-        pthread_create(&threads[i], NULL, processarPassageiro, &passageiros[i]);
+    FILE *arquivo = fopen(caminhoArquivo, "r");
+    if (arquivo == NULL) {
+        perror("Erro ao abrir o arquivo");
+        return 1;
     }
 
-    // Espera todas as threads terminarem
-    for (int i = 0; i < numPassageiros; i++) {
-        pthread_join(threads[i], NULL);
+    int n;
+    fscanf(arquivo, "%d", &n);
+
+    for (int i = 0; i < n; ++i) {
+        Pessoa p;
+        fscanf(arquivo, "%d %d", &p.tempo, &p.direcao);
+        if (i == 0) {
+          primeiro = p;
+        }
+        if (p.direcao == 0) {
+            filaSubida[tamanhoFS++] = p;
+        } else {
+            filaDescida[tamanhoFD++] = p;
+        }
     }
 
-    printf("O momento final de parada da escada rolante é %d\n", estado.tempoFinal);
+    fclose(arquivo);
 
-    // Limpeza de recursos
-    sem_destroy(&semTempo);
-    sem_destroy(&semDirecao);
-    pthread_mutex_destroy(&mutex);
-    
+    pthread_create(&idThread, NULL, escalador, NULL);
+    pthread_join(idThread, NULL);
+
+    printf("Saida: %d\n", saida);
     return 0;
 }
-
