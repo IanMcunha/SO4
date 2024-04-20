@@ -61,10 +61,28 @@ A thread é usada para simular a operação contínua da escada rolante, permiti
 O uso de pthread garante que o acesso aos recursos compartilhados seja sincronizado, evitando condições de corrida e garantindo que o tempo de saída seja consistentemente atualizado.
 
 ## 1. Qual a estratégia que você utilizou para evitar que duas pessoas acessem a escada rolante ao mesmo tempo em cada abordagem?
-R: Em ambas as abordagens, utilizamos mecanismos de sincronização. Nas threads, o pthread_mutex_lock foi utilizado para garantir que somente uma thread pudesse acessar e modificar as variáveis compartilhadas em um dado momento. Nos processos, semáforos foram usados com a chamada sem_wait para bloquear o acesso à seção crítica, assegurando que apenas um processo por vez pudesse realizar mudanças no estado compartilhado da escada.
+R: 
+Threads:
+
+Para evitar que duas pessoas acessem a escada rolante simultaneamente, utilizei a sincronização através de threads com o uso de mutexes. No cenário onde se usam threads, um mutex é utilizado para controlar o acesso à seção crítica do código que manipula o estado compartilhado da escada rolante, como o tempo atual de saída (saida) e a direção atual (primeiro.direcao). O mutex garante que apenas uma thread (ou pessoa, neste contexto) pode executar a seção crítica do código por vez, o que evita condições de corrida e inconsistências no estado compartilhado.
+
+Processos:
+
+Neste código, não há concorrência real entre processos ou threads para acessar a escada rolante, já que o programa é executado de forma sequencial em um único processo. Portanto, o controle de acesso simultâneo à escada rolante não é necessário neste contexto específico. A função escadaRolante() gerencia o fluxo de pessoas virtualmente, simulando o acesso à escada rolante sem a necessidade de sincronização entre processos concorrentes, visto que não há paralelismo real envolvido.
 
 ## 2. Como garantir que somente uma das direções está ativa de cada vez em cada uma das abordagens?
-R: Isso foi conseguido mantendo uma variável de estado que registra a direção atual da escada rolante. Nas threads, antes de qualquer thread modificar a direção, ela verifica e adquire o bloqueio do mutex. Nos processos, antes de modificar a direção, o processo precisa adquirir o semáforo correspondente. Se a direção precisa ser alterada, a mudança só ocorre quando não há mais ninguém na direção anterior, garantindo que a direção só mude quando for seguro fazê-lo.
+R: 
+Threads:
+
+Para garantir que somente uma das direções da escada rolante esteja ativa por vez, o código verifica a direção da próxima pessoa na fila e decide se a escada deve continuar na mesma direção ou mudar. Isso é feito verificando a direção e o tempo de chegada das pessoas nas filas de subida e descida. A lógica inclui uma condição que só permite a mudança de direção se não houver mais ninguém esperando na direção atual ou se o próximo na direção oposta estiver agendado para um tempo posterior ao tempo de saída atual. Isso garante que a escada não mude de direção prematuramente, permitindo que todas as pessoas em uma direção específica usem a escada antes de mudar para a direção oposta.
+
+Processos: 
+
+O controle de direção na escada rolante é realizado verificando a direção (direcao) do primeiro objeto Pessoa e permitindo que pessoas na mesma direção continuem enquanto forem consecutivas e tiverem tempos de chegada que permitam. A mudança de direção ocorre quando não há mais pessoas para processar na direção atual ou quando uma pessoa da direção oposta tem um tempo de chegada que se torna o próximo na fila. Este comportamento é implementado pelas condições dentro dos blocos if que verificam a direção atual da escada e comparam os tempos de chegada das pessoas nas filas de subida e descida:
+
+Se a direção atual for de subida (direcao == 0) e não houver mais pessoas que possam subir imediatamente (de acordo com o tempo), a direção pode mudar para descida se houver pessoas esperando para descer.
+Vice-versa, se a direção atual for de descida (direcao == 1) e a situação for semelhante com pessoas esperando para subir.
+Essas verificações são feitas na lógica que decide qual primeiro Pessoa deve ser o próximo a usar a escada, baseado no tempo de chegada (tempo) e na disponibilidade das filas.
 
 ## 3. Discorra sobre as diferenças entre as implementações utilizando threads e processos e diga qual foi mais eficiente na solução do problema, justificando sua resposta.
 R: 
