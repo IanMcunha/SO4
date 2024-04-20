@@ -44,7 +44,7 @@ int escadaRolante() {
 
 int main() {
     char caminhoArquivo[256];
-    printf("Digite o caminho do arquivo de entrada (ex: ./input/E_58): ");
+    printf("Digite o caminho do arquivo de entrada (ex: /home/ec2-user/SO04/SO4/proj1/input/E_58): ");
     scanf("%s", caminhoArquivo);
 
     FILE *arquivo = fopen(caminhoArquivo, "r");
