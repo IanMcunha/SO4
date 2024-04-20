@@ -2,34 +2,29 @@
 ## Escada Rolante
 
 ## Documentação código Processos: 
-Este código implementa um sistema de gerenciamento de tráfego de pessoas em uma escada rolante que suporta movimento em duas direções: subida e descida. As pessoas são organizadas em duas filas, uma para cada direção, e processadas conforme sua ordem de chegada e a direção atual da escada. O código utiliza a biblioteca pthread para gerenciar o fluxo de pessoas de forma concorrente, simulando o funcionamento da escada em um ambiente real.
-### Estrutura do Código:
-Definição de Estruturas:
-Pessoa: Representa uma pessoa com atributos para o tempo de chegada na escada e a direcao desejada (0 para subida, 1 para descida).
+Descrição Geral
+Este programa simula o funcionamento de uma escada rolante que atende pessoas subindo e descendo. O acesso é controlado para garantir que apenas uma pessoa utilize a escada por vez e que a direção da escada seja mudada conforme necessário, baseado na fila de pessoas esperando.
 
-filaSubida e filaDescida: Arrays que armazenam as pessoas esperando para subir ou descer.
+Estruturas de Dados
+Pessoa: Estrutura que contém informações sobre o tempo de chegada (tempo) e a direção (direcao) da pessoa na escada rolante. A direção 0 indica subida e 1 indica descida.
 
-tamanhoFS e tamanhoFD: Contadores para o número de pessoas em cada fila.
+FilaSubir e FilaDescer: Arrays que armazenam as pessoas esperando para subir ou descer, respectivamente.
 
-primeiro: Armazena a primeira pessoa a usar a escada, determinando a direção inicial.
+Funções
+escadaRolante(): Função principal que simula o funcionamento da escada. Ela percorre as filas de subida e descida, processando uma pessoa de cada vez de acordo com sua direção e tempo de chegada. A direção da escada é alternada conforme necessário, e o tempo de "saída" é atualizado a cada pessoa processada para refletir o tempo necessário para a próxima mudança de direção ou continuação do movimento.
 
-Função escalador:
-Controla o acesso à escada rolante e gerencia a sequência em que as pessoas usam a escada.
-A função decide qual pessoa vai usar a escada com base em sua direção e tempo de chegada.
-Implementa lógica para alternar a direção da escada quando necessário e garantir que o tempo de uso da escada seja respeitado.
-Atualiza o tempo global saida, que representa o último momento de uso da escada.
+Fluxo Principal (Função main)
 
-Função main:
-Abre e lê o arquivo de entrada que contém o número de pessoas e suas informações (tempo e direção).
-Inicializa as filas de pessoas baseadas nas informações lidas.
-Cria uma thread para executar a função escalador.
-Aguarda a conclusão da thread e exibe o tempo final após todos usarem a escada.
+Leitura do Arquivo de Entrada: O programa lê de um arquivo especificado pelo usuário que contém o número de pessoas e, para cada pessoa, o seu tempo de chegada e direção.
 
-### Lógica de Processamento:
-Inicialização: O programa lê os dados de entrada e inicializa as filas de subida e descida com base nas direções desejadas das pessoas.
-Processamento Concorrente: A função escalador é executada em uma thread separada para simular o funcionamento da escada rolante. Isso permite que o sistema opere de forma assíncrona e eficiente.
-Gerenciamento de Direção: O programa verifica continuamente a direção atual da escada e a compara com a direção das pessoas na fila. Se a pessoa no início da fila corresponder à direção atual da escada, ela usará a escada. Caso contrário, a direção pode ser alterada se a outra fila tiver pessoas esperando e a escada estiver livre.
-Atualização de Tempo: Cada uso da escada adiciona 10 segundos ao tempo global saida, que rastreia quando a escada foi usada pela última vez.
+Processamento da Escada Rolante: As pessoas são adicionadas às filas correspondentes à sua direção. A função escadaRolante é então chamada para simular o funcionamento da escada, processando cada pessoa nas filas.
+
+Saída: Ao final do processamento, o programa exibe o tempo total necessário para que todas as pessoas tenham usado a escada rolante.
+
+###Considerações de Implementação
+Sincronização: A implementação atual não requer sincronização entre threads ou processos, pois o programa opera de forma sequencial. No entanto, se a simulação fosse estendida para operar com múltiplas escadas em paralelo, mecanismos de sincronização (como semáforos ou mutexes) seriam necessários.
+
+Eficiência: O programa é projetado para ser simples e direto, usando uma abordagem sequencial para processar as filas de pessoas. Isso é adequado para simulações pequenas a moderadas, mas pode ser ineficiente para um número muito grande de pessoas devido à natureza sequencial do processamento.
 
 ## Documentação código Threads:
 Este programa simula a operação de uma escada rolante que acomoda pessoas subindo e descendo, utilizando threads para sincronizar o processo de maneira eficaz. O código é dividido em várias partes principais, incluindo definições de estruturas, lógica de processamento em uma thread e a leitura de dados de entrada.
@@ -68,7 +63,7 @@ Para evitar que duas pessoas acessem a escada rolante simultaneamente, utilizei 
 
 Processos:
 
-Neste código, não há concorrência real entre processos ou threads para acessar a escada rolante, já que o programa é executado de forma sequencial em um único processo. Portanto, o controle de acesso simultâneo à escada rolante não é necessário neste contexto específico. A função escadaRolante() gerencia o fluxo de pessoas virtualmente, simulando o acesso à escada rolante sem a necessidade de sincronização entre processos concorrentes, visto que não há paralelismo real envolvido.
+No código com processos, a estratégia não se foca explicitamente no controle de acesso simultâneo à escada por múltiplas pessoas, uma vez que o processo filho executa a função escadaRolante() de maneira sequencial. A função itera pelas filas de pessoas subindo e descendo, tratando uma pessoa de cada vez, garantindo que apenas uma pessoa (ou uma direção) seja processada num dado momento. Não há concorrência direta entre threads ou processos acessando a mesma função ao mesmo tempo, o que naturalmente evita colisões e condições de corrida.
 
 ## 2. Como garantir que somente uma das direções está ativa de cada vez em cada uma das abordagens?
 R: 
@@ -78,11 +73,7 @@ Para garantir que somente uma das direções da escada rolante esteja ativa por 
 
 Processos: 
 
-O controle de direção na escada rolante é realizado verificando a direção (direcao) do primeiro objeto Pessoa e permitindo que pessoas na mesma direção continuem enquanto forem consecutivas e tiverem tempos de chegada que permitam. A mudança de direção ocorre quando não há mais pessoas para processar na direção atual ou quando uma pessoa da direção oposta tem um tempo de chegada que se torna o próximo na fila. Este comportamento é implementado pelas condições dentro dos blocos if que verificam a direção atual da escada e comparam os tempos de chegada das pessoas nas filas de subida e descida:
-
-Se a direção atual for de subida (direcao == 0) e não houver mais pessoas que possam subir imediatamente (de acordo com o tempo), a direção pode mudar para descida se houver pessoas esperando para descer.
-Vice-versa, se a direção atual for de descida (direcao == 1) e a situação for semelhante com pessoas esperando para subir.
-Essas verificações são feitas na lógica que decide qual primeiro Pessoa deve ser o próximo a usar a escada, baseado no tempo de chegada (tempo) e na disponibilidade das filas.
+A função escadaRolante() controla a direção da escada verificando a direção da próxima pessoa na fila que está pronta para usar a escada. Se a pessoa da frente na fila está indo para a direção oposta da última pessoa que usou a escada e já passou o tempo necessário para mudar de direção (determinado pela variável saida), a direção da escada é alterada. A direção é gerenciada pela variável primeiro.direcao, que é atualizada a cada iteração para refletir a pessoa que está atualmente usando a escada. Isso garante que a escada só opera em uma direção por vez, mudando apenas quando necessário e permitido pelas condições.
 
 ## 3. Discorra sobre as diferenças entre as implementações utilizando threads e processos e diga qual foi mais eficiente na solução do problema, justificando sua resposta.
 R: 
