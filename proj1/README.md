@@ -35,21 +35,27 @@ Atualização de Tempo: Cada uso da escada adiciona 10 segundos ao tempo global 
 Este programa simula a operação de uma escada rolante que acomoda pessoas subindo e descendo, utilizando threads para sincronizar o processo de maneira eficaz. O código é dividido em várias partes principais, incluindo definições de estruturas, lógica de processamento em uma thread e a leitura de dados de entrada.
 ### Estruturas Definidas:
 Pessoa: Esta estrutura armazena informações cruciais sobre cada indivíduo que utiliza a escada rolante, incluindo o tempo de chegada e a direcao desejada (0 para subir, 1 para descer).
+
 filaSubida e filaDescida: Dois arrays que armazenam as pessoas que desejam subir e descer, respectivamente.
+
 Variáveis Globais:
 saida: Mantém o tempo atualizado quando a última pessoa usou a escada.
+
 primeiro: Registra a primeira pessoa na escada, ajudando a determinar a direção inicial da escada rolante.
+
 Função escalador:
 É a função principal que gerencia a lógica de como as pessoas usam a escada rolante.
 Utiliza dois índices (indiceFS e indiceFD) para rastrear o progresso através das filas de subida e descida.
 A lógica condicional dentro do loop verifica a direção da escada e decide se a pessoa atual pode proceder com base na sua direção e no tempo de chegada.
 A direção da escada pode mudar se a próxima pessoa na fila oposta estiver esperando e a pessoa atual na fila ativa tiver um tempo de chegada posterior ao último tempo registrado de uso da escada.
 Atualiza o tempo de saída após cada uso da escada, adicionando 10 segundos ao tempo da última pessoa que usou.
+
 Função main:
 Responsável por configurar o ambiente de execução, incluindo a leitura de entrada do arquivo especificado pelo usuário.
 Inicializa as filas de pessoas e popula-as com dados do arquivo de entrada.
 Cria uma thread para executar a função escalador e espera por sua conclusão para garantir que o programa não termine prematuramente.
 Exibe o resultado final, que é o último tempo de saída registrado, indicando quando a escada foi usada pela última vez.
+
 ### Processamento e Sincronização:
 A thread é usada para simular a operação contínua da escada rolante, permitindo que múltiplas pessoas sejam processadas simultaneamente de forma teórica.
 O uso de pthread garante que o acesso aos recursos compartilhados seja sincronizado, evitando condições de corrida e garantindo que o tempo de saída seja consistentemente atualizado.
