@@ -2,29 +2,24 @@
 ## Escada Rolante
 
 ## Documentação código Processos: 
-Descrição Geral
 Este programa simula o funcionamento de uma escada rolante que atende pessoas subindo e descendo. O acesso é controlado para garantir que apenas uma pessoa utilize a escada por vez e que a direção da escada seja mudada conforme necessário, baseado na fila de pessoas esperando.
 
-###Estruturas de Dados
+### Estruturas Definidas:
 Pessoa: Estrutura que contém informações sobre o tempo de chegada (tempo) e a direção (direcao) da pessoa na escada rolante. A direção 0 indica subida e 1 indica descida.
 
 FilaSubir e FilaDescer: Arrays que armazenam as pessoas esperando para subir ou descer, respectivamente.
 
-Funções
+### Funções:
+
 escadaRolante(): Função principal que simula o funcionamento da escada. Ela percorre as filas de subida e descida, processando uma pessoa de cada vez de acordo com sua direção e tempo de chegada. A direção da escada é alternada conforme necessário, e o tempo de "saída" é atualizado a cada pessoa processada para refletir o tempo necessário para a próxima mudança de direção ou continuação do movimento.
 
-###Fluxo Principal (Função main)
+### Fluxo Principal (Função main):
 
 Leitura do Arquivo de Entrada: O programa lê de um arquivo especificado pelo usuário que contém o número de pessoas e, para cada pessoa, o seu tempo de chegada e direção.
 
 Processamento da Escada Rolante: As pessoas são adicionadas às filas correspondentes à sua direção. A função escadaRolante é então chamada para simular o funcionamento da escada, processando cada pessoa nas filas.
 
 Saída: Ao final do processamento, o programa exibe o tempo total necessário para que todas as pessoas tenham usado a escada rolante.
-
-###Considerações de Implementação
-Sincronização: A implementação atual não requer sincronização entre threads ou processos, pois o programa opera de forma sequencial. No entanto, se a simulação fosse estendida para operar com múltiplas escadas em paralelo, mecanismos de sincronização (como semáforos ou mutexes) seriam necessários.
-
-Eficiência: O programa é projetado para ser simples e direto, usando uma abordagem sequencial para processar as filas de pessoas. Isso é adequado para simulações pequenas a moderadas, mas pode ser ineficiente para um número muito grande de pessoas devido à natureza sequencial do processamento.
 
 ## Documentação código Threads:
 Este programa simula a operação de uma escada rolante que acomoda pessoas subindo e descendo, utilizando threads para sincronizar o processo de maneira eficaz. O código é dividido em várias partes principais, incluindo definições de estruturas, lógica de processamento em uma thread e a leitura de dados de entrada.
