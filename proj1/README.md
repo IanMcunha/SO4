@@ -6,19 +6,25 @@ Este código implementa um sistema de gerenciamento de tráfego de pessoas em um
 ### Estrutura do Código:
 Definição de Estruturas:
 Pessoa: Representa uma pessoa com atributos para o tempo de chegada na escada e a direcao desejada (0 para subida, 1 para descida).
+
 filaSubida e filaDescida: Arrays que armazenam as pessoas esperando para subir ou descer.
+
 tamanhoFS e tamanhoFD: Contadores para o número de pessoas em cada fila.
+
 primeiro: Armazena a primeira pessoa a usar a escada, determinando a direção inicial.
+
 Função escalador:
 Controla o acesso à escada rolante e gerencia a sequência em que as pessoas usam a escada.
 A função decide qual pessoa vai usar a escada com base em sua direção e tempo de chegada.
 Implementa lógica para alternar a direção da escada quando necessário e garantir que o tempo de uso da escada seja respeitado.
 Atualiza o tempo global saida, que representa o último momento de uso da escada.
+
 Função main:
 Abre e lê o arquivo de entrada que contém o número de pessoas e suas informações (tempo e direção).
 Inicializa as filas de pessoas baseadas nas informações lidas.
 Cria uma thread para executar a função escalador.
 Aguarda a conclusão da thread e exibe o tempo final após todos usarem a escada.
+
 ### Lógica de Processamento:
 Inicialização: O programa lê os dados de entrada e inicializa as filas de subida e descida com base nas direções desejadas das pessoas.
 Processamento Concorrente: A função escalador é executada em uma thread separada para simular o funcionamento da escada rolante. Isso permite que o sistema opere de forma assíncrona e eficiente.
