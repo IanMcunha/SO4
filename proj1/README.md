@@ -69,17 +69,23 @@ R: Isso foi conseguido mantendo uma variável de estado que registra a direção
 ## 3. Discorra sobre as diferenças entre as implementações utilizando threads e processos e diga qual foi mais eficiente na solução do problema, justificando sua resposta.
 R: 
 Implementação com Threads:
+
 Vantagens: Utiliza menos recursos do sistema pois threads de um mesmo processo compartilham memória e estado. Isso torna a comunicação e a sincronização entre elas mais fácil e rápida.
+
 Desvantagens: Erros e falhas em uma thread podem afetar todas as outras threads do mesmo processo, pois compartilham o mesmo espaço de memória.
 
 Implementação com Processos:
+
 Vantagens: Processos são isolados entre si, o que oferece maior segurança, pois falhas em um processo não afetam os outros.
+
 Desvantagens: Comunicação entre processos é mais complexa e lenta do que entre threads, devido à necessidade de mecanismos IPC como pipes, sockets ou memória compartilhada. Além disso, processos têm maior overhead de criação e gerenciamento.
 
 Eficiência na Solução do Problema:
+
 A eficiência depende do contexto de uso:
 
 Para ambientes que exigem alta segurança e isolamento, onde falhas em uma parte do sistema não devem comprometer todo o sistema, a implementação com processos pode ser mais adequada, apesar de menos eficiente em termos de uso de recursos.
+
 Para a maioria das aplicações práticas deste problema, a implementação com threads tende a ser mais eficiente. Isso ocorre porque a sincronização e comunicação entre threads são mais rápidas e consomem menos recursos, o que é crucial em um sistema de tempo real como o controle de uma escada rolante.
 
 ## Comprovação de execução na aws: 
