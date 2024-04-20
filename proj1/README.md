@@ -21,6 +21,8 @@ R: Isso foi conseguido mantendo uma variável de estado que registra a direção
 #### 3. Discorra sobre as diferenças entre as implementações utilizando threads e processos e diga qual foi mais eficiente na solução do problema, justificando sua resposta.
 R: A principal diferença entre as implementações usando threads e processos está na forma como a memória é compartilhada e na sobrecarga associada à criação e gestão dos trabalhadores. Threads compartilham o mesmo espaço de memória do processo pai, tornando a comunicação e sincronização mais diretas e com menos sobrecarga, já que não há necessidade de memória compartilhada IPC ou semáforos IPC. Processos, por outro lado, têm seu próprio espaço de memória, exigindo IPC para compartilhar estado, o que pode ser mais pesado em termos de performance. No contexto da simulação da escada rolante, as threads podem ser mais eficientes porque requerem menos recursos do sistema e têm menor latência na comunicação devido ao compartilhamento direto da memória. Além disso, criar e destruir threads geralmente tem menos sobrecarga do que fazer o mesmo com processos.
 
-## Execução com processo (E_1)
+## Comprovação de execução na aws: 
 
-## Execução com thread (E_1)
+![Screenshot 2024-04-19 231424](https://github.com/IanMcunha/SO4/assets/101913171/0c46a754-208e-4f5c-a66a-c26e407e98f9)
+
+
