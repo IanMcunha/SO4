@@ -71,7 +71,7 @@ int main() {
     fclose(arquivo);
 
     int saida = escadaRolante();  // Chamada direta à função escadaRolante sem necessidade de processo adicional ou mmap
-    printf("Saida: %d\n", saida);
+    printf("Saida: %d\n", saida + 10);
 
     return 0;
 }
