@@ -5,7 +5,7 @@
 Descrição Geral
 Este programa simula o funcionamento de uma escada rolante que atende pessoas subindo e descendo. O acesso é controlado para garantir que apenas uma pessoa utilize a escada por vez e que a direção da escada seja mudada conforme necessário, baseado na fila de pessoas esperando.
 
-Estruturas de Dados
+###Estruturas de Dados
 Pessoa: Estrutura que contém informações sobre o tempo de chegada (tempo) e a direção (direcao) da pessoa na escada rolante. A direção 0 indica subida e 1 indica descida.
 
 FilaSubir e FilaDescer: Arrays que armazenam as pessoas esperando para subir ou descer, respectivamente.
@@ -13,7 +13,7 @@ FilaSubir e FilaDescer: Arrays que armazenam as pessoas esperando para subir ou 
 Funções
 escadaRolante(): Função principal que simula o funcionamento da escada. Ela percorre as filas de subida e descida, processando uma pessoa de cada vez de acordo com sua direção e tempo de chegada. A direção da escada é alternada conforme necessário, e o tempo de "saída" é atualizado a cada pessoa processada para refletir o tempo necessário para a próxima mudança de direção ou continuação do movimento.
 
-Fluxo Principal (Função main)
+###Fluxo Principal (Função main)
 
 Leitura do Arquivo de Entrada: O programa lê de um arquivo especificado pelo usuário que contém o número de pessoas e, para cada pessoa, o seu tempo de chegada e direção.
 
