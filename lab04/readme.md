@@ -29,3 +29,8 @@ Criação de Threads: O programa cria uma thread para cada linha da matriz.
 Sincronização de Threads: Após a criação, o programa espera a conclusão de todas as threads antes de prosseguir.
 
 Impressão do Resultado: O programa imprime o vetor resultado após todas as threads terem completado o cálculo.
+
+## Print AWS: 
+
+![image](https://github.com/IanMcunha/SO4/assets/101913171/7745ac53-ff2e-4039-b705-0a952f2de75b)
+
