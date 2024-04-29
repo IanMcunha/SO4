@@ -12,8 +12,8 @@ O código deve ser compilado com a flag `-pthread` para vincular a biblioteca pt
 
 Exemplo de compilação e execução:
 ```bash
-gcc -pthread -o multMatrixVet multMatrixVet.c
-./multMatrixVet
+gcc -pthread -o multMatrizVet multMatrizVet.c
+./multMatrizVet
 ```
 
 ## Código
