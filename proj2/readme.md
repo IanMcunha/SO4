@@ -18,8 +18,26 @@ Este projeto faz parte da disciplina de Sistemas Operacionais da Universidade Pr
 - Não deve haver dependências proprietárias para execução e compilação do programa.
 
 ## Compilação e Execução
+-Documentação do Código
+-Estrutura do Código
+-O programa é composto pelos seguintes elementos principais:
+
+-Declaração do Mutex: pthread_mutex_t mutex;
+
+-Utilizado para sincronizar o acesso às contas durante as transferências.
+-Inicialização e Destruição do Mutex:
+
+-pthread_mutex_init(&mutex, NULL);
+-pthread_mutex_destroy(&mutex);
+-O mutex é inicializado no início do main e destruído no final para garantir a limpeza dos recursos.
+-Função de Transferência: int transferencia(void *arg)
+
+-Executada pelos processos filhos criados pela chamada clone.
+-Realiza a transferência de fundos de from para to se houver saldo suficiente.
+-Utiliza pthread_mutex_lock(&mutex); e pthread_mutex_unlock(&mutex); para garantir que apenas uma transferência ocorra por vez.
 
 ### Pré-requisitos
 
 - Compilador GCC
 - Sistema operacional Linux
+
